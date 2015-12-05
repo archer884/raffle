@@ -1,4 +1,3 @@
-extern crate getopts;
 extern crate rand;
 
 use std::iter::FromIterator;
@@ -6,7 +5,6 @@ use std::collections::HashSet;
 use std::fs::{ File, OpenOptions };
 use std::io::{ BufRead, BufReader, Write };
 
-use getopts::Options;
 use rand::{ Rng, OsRng };
 
 fn main() {
@@ -54,23 +52,18 @@ fn append_to_file(path: &str, content: &str) {
 
     match file {
         Err(_) => panic!("unable to append to winner file"),
-        Ok(mut file) => {
-            write!(file, "{}\n", content);
-        }
+        Ok(mut file) => { write!(file, "{}\n", content).ok(); }
     }
 }
 
 fn read_paths() -> Result<(String, String), ()> {
-    let mut options = Options::new();
-    options.reqopt("e", "entrants", "list of entrants", "entrants.txt");
-    options.reqopt("w", "winners", "list of winners", "winners.txt");
-
-    let matches = try!(
-        options.parse(std::env::args()).map_err(|_| ())
-    );
-
-    Ok((
-        matches.opt_str("entrants").unwrap(),
-        matches.opt_str("winners").unwrap(),
-    ))
+    let paths: Vec<_> = std::env::args().skip(1).collect();
+    if paths.len() == 2 {
+        Ok((
+            paths[0].to_owned(),
+            paths[1].to_owned(),
+        ))
+    } else {
+        Err(())
+    }
 }
