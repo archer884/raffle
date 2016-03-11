@@ -9,7 +9,10 @@ use rand::{ Rng, OsRng };
 
 fn main() {
     match read_paths() {
-        Err(_) => panic!("<entrant> and <winner> paths both required"),
+        Err(_) => panic!(
+            "<entrant> and <winner> paths both required"
+        ),
+
         Ok((entrants_path, winners_path)) => {
             let entrants: Vec<_> = read_into(&entrants_path);
             let winners: HashSet<_> = read_into(&winners_path);
